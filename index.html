@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ahmad AlMaghaireh | Cyber Security Portfolio</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/csshake/dist/csshake.min.css">
+  <style>
+    body {
+      background-color: #0d1117;
+      color: #c9d1d9;
+      font-family: 'Courier New', monospace;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Matrix background effect */
+    #matrix-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.15;
+    }
+
+    .navbar {
+      background-color: #161b22;
+      border-bottom: 1px solid #238636;
+    }
+
+    .navbar-brand {
+      font-family: 'Courier New', monospace;
+      font-weight: bold;
+      color: #33ff33 !important;
+    }
+
+    .section-title {
+      color: #58a6ff;
+      margin-bottom: 20px;
+      position: relative;
+      display: inline-block;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 2px;
+      bottom: -5px;
+      left: 0;
+      background: linear-gradient(90deg, #58a6ff, #238636);
+      animation: titleUnderline 3s ease infinite;
+    }
+
+    @keyframes titleUnderline {
+      0% { width: 0%; left: 0; }
+      50% { width: 100%; left: 0; }
+      100% { width: 0%; left: 100%; }
+    }
+
+    .card {
+      background-color: #21262d;
+      border: 1px solid #30363d;
+      margin-bottom: 25px;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+      color: #c9d1d9;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(56, 139, 253, 0.1),
+        transparent
+      );
+      transition: 0.5s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(46, 164, 79, 0.1);
+      border-color: #238636;
+    }
+
+    .card:hover::before { left: 100%; }
+
+    .card-title { color: #58a6ff; }
+    .card-text  { color: #c9d1d9; }
+
+    .btn-custom {
+      background-color: #238636;
+      color: white;
+      border: none;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+
+    .btn-custom:hover {
+      background-color: #2ea043;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(46, 164, 79, 0.4);
+    }
+
+    .btn-custom::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+      );
+      transition: 0.5s;
+    }
+
+    .btn-custom:hover::after { left: 100%; }
+
+    footer {
+      margin-top: 50px;
+      padding: 20px;
+      background-color: #161b22;
+      text-align: center;
+      color: #8b949e;
+      border-top: 1px solid #30363d;
+    }
+
+    a {
+      color: #58a6ff;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    a:hover {
+      color: #79c0ff;
+      text-shadow: 0 0 5px rgba(88, 166, 255, 0.5);
+    }
+
+    .terminal {
+      background-color: #0a0e12;
+      color: #33ff33;
+      font-family: 'Courier New', monospace;
+      padding: 20px;
+      border-radius: 5px;
+      max-width: 900px;
+      margin: 20px auto;
+      white-space: pre-wrap;
+      border: 1px solid #238636;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 15px rgba(46, 164, 79, 0.2);
+      text-align: left;
+    }
+
+    .terminal::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%,
+        rgba(0, 0, 0, 0.25) 50%
+      );
+      background-size: 100% 4px;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .cursor { animation: blink 1s infinite; }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+    .profile-img {
+      border-radius: 50%;
+      max-width: 150px;
+      margin: 20px auto;
+      display: block;
+      border: 3px solid #58a6ff;
+      box-shadow: 0 0 20px rgba(88, 166, 255, 0.5);
+      transition: all 0.3s;
+    }
+
+    .profile-img:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(88, 166, 255, 0.8);
+    }
+
+    /* Skill bars */
+    .skill-container { margin-bottom: 15px; }
+    .skill-name { margin-bottom: 5px; color: #c9d1d9; }
+    .skill-bar {
+      height: 10px;
+      background-color: #161b22;
+      border-radius: 5px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .skill-progress {
+      height: 100%;
+      border-radius: 5px;
+      background: linear-gradient(90deg, #238636, #33ff33);
+      position: relative;
+      width: 0;
+      transition: width 1.5s ease-in-out;
+    }
+
+    .skill-progress::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+      );
+      animation: shine 2s infinite;
+    }
+
+    @keyframes shine { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+
+    /* Glitch effect on hover */
+    .glitch-effect:hover { animation: glitch 0.5s linear infinite; }
+    @keyframes glitch {
+      0% { transform: translate(0); }
+      20% { transform: translate(-2px, 2px); }
+      40% { transform: translate(-2px, -2px); }
+      60% { transform: translate(2px, 2px); }
+      80% { transform: translate(2px, -2px); }
+      100% { transform: translate(0); }
+    }
+
+    /* Binary rain effect */
+    .binary-rain {
+      position: absolute;
+      color: rgba(46, 164, 79, 0.5);
+      animation: fall linear infinite;
+      z-index: -1;
+    }
+    @keyframes fall { to { transform: translateY(100vh); } }
+
+    /* Scan line animation */
+    .scan-line {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 10px;
+      background: linear-gradient(
+        to bottom,
+        transparent,
+        rgba(0, 255, 0, 0.1),
+        transparent
+      );
+      animation: scan 4s linear infinite;
+      pointer-events: none;
+      z-index: 999;
+    }
+    @keyframes scan { 0% { top: -10px; } 100% { top: 100%; } }
+
+    /* Small helper for section spacing consistency */
+    .section-wrap { padding-top: 3rem; padding-bottom: 3rem; }
+  </style>
+</head>
+<body>
+  <!-- Matrix background canvas -->
+  <canvas id="matrix-canvas"></canvas>
+
+  <!-- Scan line effect -->
+  <div class="scan-line"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand glitch-effect" href="#">$> Ahmad_AlMaghaireh</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="text-center p-5" data-aos="fade-up">
+    <img src="1.jpg" alt="Ahmad Profile Photo" class="profile-img shake-slow" />
+    <h1 class="display-5">Cybersecurity Student & Developer</h1>
+    <p class="lead">Building secure, smart systems using ethical hacking, AI, and modern web technologies.</p>
+
+    <!-- Terminal with About Me + Career Objective -->
+    <div class="terminal" id="type-terminal" data-aos="zoom-in">
+      <span id="terminal-text"></span>
+      <span class="cursor">|</span>
+    </div>
+
+    <!-- Keep CV button as-is -->
+    <a href="Ahmad-CV.pdf" class="btn btn-custom mt-3 shake" download>📥 Download My CV</a>
+  </section>
+
+  <!-- Education Section -->
+  <section class="container section-wrap" data-aos="fade-right">
+    <h2 class="section-title">Education</h2>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">Bachelor of Cyber Security</h5>
+            <p class="card-text">
+              Al Hussein Technical University (HTU)<br>
+              GPA: 3.8<br>
+              Expected Graduation: August 2026
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">High School (Tawjihi)</h5>
+            <p class="card-text">
+              Scientific Stream<br>
+              Score: 96.7%
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-3">
+      <p class="text-light">
+        <strong>Relevant Coursework:</strong> Network Security, Operating Systems, Cryptography, Data Structures
+      </p>
+    </div>
+  </section>
+
+  <!-- Skills (expanded to include Soft Skills + Languages) -->
+  <section class="container section-wrap" data-aos="fade-left">
+    <h2 class="section-title">Skills</h2>
+    <div class="row">
+      <!-- Hard skills with bars -->
+      <div class="col-lg-6">
+        <h5 class="card-title mb-3">Technical (Hard) Skills</h5>
+
+        <div class="skill-container">
+          <div class="skill-name">Ethical Hacking & Penetration Testing (CEH-level knowledge)</div>
+          <div class="skill-bar"><div class="skill-progress" data-width="90%"></div></div>
+        </div>
+
+        <div class="skill-container">
+          <div class="skill-name">Network Security & Networking Fundamentals (CCNA-level knowledge)</div>
+          <div class="skill-bar"><div class="skill-progress" data-width="85%"></div></div>
+        </div>
+
+        <div class="skill-container">
+          <div class="skill-name">Secure Coding (PHP, Java, Python)</div>
+          <div class="skill-bar"><div class="skill-progress" data-width="88%"></div></div>
+        </div>
+
+        <div class="skill-container">
+          <div class="skill-name">FastAPI & RESTful API Development</div>
+          <div class="skill-bar"><div class="skill-progress" data-width="80%"></div></div>
+        </div>
+
+        <div class="skill-container">
+          <div class="skill-name">Web Development (Front-end & Back-end)</div>
+          <div class="skill-bar"><div class="skill-progress" data-width="85%"></div></div>
+        </div>
+
+        <div class="skill-container">
+          <div class="skill-name">AI Integration (OpenAI APIs) & NLP (Hugging Face Transformers)</div>
+          <div class="skill-bar"><div class="skill-progress" data-width="75%"></div></div>
+        </div>
+      </div>
+
+      <!-- Soft skills + languages -->
+      <div class="col-lg-6">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">Soft Skills</h5>
+            <ul class="mb-4">
+              <li>Clear technical and non-technical communication</li>
+              <li>Problem-solving and analytical thinking</li>
+              <li>Time management and meeting deadlines</li>
+              <li>Teamwork and collaboration in academic projects</li>
+              <li>Ethical responsibility and attention to data privacy</li>
+              <li>Self-learning and continuous skill development</li>
+            </ul>
+
+            <h5 class="card-title">Languages</h5>
+            <ul class="mb-0">
+              <li>Arabic: Native</li>
+              <li>English: Professional working proficiency</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects (rewritten to include Context, Role, Tools, Outcome/Impact) -->
+  <section class="container section-wrap" data-aos="fade-up">
+    <h2 class="section-title text-center">Educational Projects</h2>
+
+    <!-- Project 1 -->
+    <div class="card" data-aos="fade-up">
+      <div class="card-body">
+        <h5 class="card-title">SecureMidea – Instagram Political Filter</h5>
+        <p class="card-text"><strong>Context:</strong> Academic and competition-based project focused on cybersecurity, AI, and media integrity.</p>
+        <p class="card-text">
+          <strong>Description:</strong> SecureMidea is a Chrome extension designed to detect politically manipulative Arabic comments on Instagram.
+          It uses a FastAPI backend and an NLP model (AraBERT) to analyze comments in real time and flag potentially misleading content directly within the user interface.
+        </p>
+        <p class="card-text"><strong>My Role:</strong> Lead Developer and Researcher</p>
+        <p class="card-text"><strong>Tools & Technologies:</strong> JavaScript, FastAPI, Python, Hugging Face Transformers, AraBERT, Chrome Extensions</p>
+        <p class="card-text"><strong>Outcome / Impact:</strong> Won 2nd place in the Creative Cybersecurity & AI competition and was presented publicly.</p>
+        <p class="card-text">
+          🔗 <a href="https://github.com/AhmadM962/Secure_Midea" target="_blank" class="glitch-effect">GitHub</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Project 2 -->
+    <div class="card" data-aos="fade-up" data-aos-delay="100">
+      <div class="card-body">
+        <h5 class="card-title">Lawyer GPT – AI Legal Assistant</h5>
+        <p class="card-text"><strong>Context:</strong> Academic full-stack development project with a focus on secure systems and AI integration.</p>
+        <p class="card-text">
+          <strong>Description:</strong> Lawyer GPT is a full-stack legal chatbot platform built using PHP and the OpenAI API.
+          The system includes secure user authentication, chat history tracking, and a responsive user interface.
+          The platform was deployed online and optimized with basic SEO practices.
+        </p>
+        <p class="card-text"><strong>My Role:</strong> Full-Stack Developer</p>
+        <p class="card-text"><strong>Tools & Technologies:</strong> PHP, MySQL, OpenAI API, Web Security, Authentication Systems, HTML/CSS</p>
+        <p class="card-text"><strong>Outcome / Impact:</strong> Delivered a deployed, functional web application demonstrating secure authentication and responsible AI integration.</p>
+        <p class="card-text">
+          🌐 <a href="https://lawyergpt.online/" target="_blank" class="glitch-effect">Live Site</a><br>
+          🔗 <a href="https://github.com/AhmadM962/Lawyer-Gpt" target="_blank" class="glitch-effect">GitHub</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Project 3 -->
+    <div class="card" data-aos="fade-up" data-aos-delay="200">
+      <div class="card-body">
+        <h5 class="card-title">Cybersecurity University Projects</h5>
+        <p class="card-text"><strong>Context:</strong> Project-based learning across multiple cybersecurity and networking courses.</p>
+        <p class="card-text">
+          <strong>Description:</strong> Completed more than 10 academic projects covering ethical hacking, penetration testing labs, firewall configuration,
+          network security, and secure web application development.
+        </p>
+        <p class="card-text"><strong>My Role:</strong> Developer and Security Analyst</p>
+        <p class="card-text"><strong>Tools & Technologies:</strong> Java, Python, SQL, Networking Tools, Penetration Testing Tools, Secure Coding Practices</p>
+        <p class="card-text"><strong>Outcome / Impact:</strong> Strengthened practical skills in identifying vulnerabilities, documenting findings, and applying secure development methodologies.</p>
+        <p class="card-text">
+          🔗 <a href="https://github.com/AhmadM962/my-projects" target="_blank" class="glitch-effect">GitHub Projects</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEW: Certifications & Awards -->
+  <section class="container section-wrap" data-aos="fade-right">
+    <h2 class="section-title">Certifications & Awards</h2>
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">Certifications / Training</h5>
+            <ul class="mb-0">
+              <li>Cisco CCNA (Networking fundamentals and routing concepts)</li>
+              <li>CEH (Certified Ethical Hacker) – academic training and practice</li>
+              <li>TryHackMe CTF challenges and cybersecurity labs</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">Awards and Recognition</h5>
+            <ul class="mb-0">
+              <li>2nd Place – Creative Cybersecurity & AI Competition</li>
+              <li>Presenter at a public cybersecurity and technology forum (2025)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEW: Testimonials / References -->
+  <section class="container section-wrap" data-aos="fade-left">
+    <h2 class="section-title">Testimonials / References</h2>
+
+    <div class="card" data-aos="fade-up">
+      <div class="card-body">
+        <h5 class="card-title">Academic Testimonial</h5>
+        <p class="card-text"><strong>Dr. Sami Mashaqbeh</strong></p>
+        <p class="card-text">
+          “Ahmad is a well-organized and dedicated student. Through his academic projects, he consistently demonstrated professional-quality work,
+          strong technical understanding, and thoughtful, intelligent problem-solving.”
+        </p>
+      </div>
+    </div>
+
+    <div class="card" data-aos="fade-up" data-aos-delay="100">
+      <div class="card-body">
+        <h5 class="card-title">Peer Testimonial</h5>
+        <p class="card-text"><strong>Omar Hasan – Colleague (Student)</strong></p>
+        <p class="card-text">
+          “Ahmad is an effective team leader who guided the group to complete projects in a professional and efficient manner.
+          He communicated clearly, managed tasks well, and ensured high-quality outcomes.”
+        </p>
+      </div>
+    </div>
+
+    <div class="card" data-aos="fade-up" data-aos-delay="200">
+      <div class="card-body">
+        <h5 class="card-title">References</h5>
+        <p class="card-text mb-0">Academic and professional references are available upon request.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEW: Services / Potential Work -->
+  <section class="container section-wrap" data-aos="fade-up">
+    <h2 class="section-title">Services & Potential Work</h2>
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">Services Provided</h5>
+            <ul class="mb-0">
+              <li>Secure web application development</li>
+              <li>Entry-level security review for web applications</li>
+              <li>Secure integration of AI APIs into web platforms</li>
+              <li>Authentication and authorization system implementation</li>
+              <li>Security-focused documentation and recommendations</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">Products / Potential Work</h5>
+            <ul class="mb-0">
+              <li>Security checklist toolkit for student and startup projects</li>
+              <li>Basic API security auditing tool</li>
+              <li>Arabic NLP-based content safety tools</li>
+              <li>Continued development of AI-assisted cybersecurity utilities</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact (updated to include all contact links) -->
+  <section class="container section-wrap" data-aos="zoom-in">
+    <h2 class="section-title">Contact</h2>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <ul class="list-unstyled mb-0">
+              <li><strong>Email:</strong> <a href="mailto:23110205@htu.edu.jo" class="glitch-effect">23110205@htu.edu.jo</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <ul class="list-unstyled mb-0">
+              <li><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/ahmad-maghaireh-635961204/" target="_blank" class="glitch-effect">ahmad-maghaireh</a></li>
+              <li><strong>GitHub:</strong> <a href="https://github.com/AhmadM962" target="_blank" class="glitch-effect">AhmadM962</a></li>
+              <li><strong>Upwork:</strong> <a href="https://www.upwork.com/freelancers/~01fb786d68e2abf3f5" target="_blank" class="glitch-effect">Ahmad M</a></li>
+
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="shake-slow">
+    &copy; 2025 Ahmad AlMaghaireh | Cybersecurity Portfolio
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    // Initialize AOS animations
+    AOS.init({ duration: 1000, once: true });
+
+    // Terminal typing animation (UPDATED content)
+    const terminalText =
+`About Me
+
+I am Ahmad AlMaghaireh, a Cyber Security student at Al Hussein Technical University (HTU).
+I have a strong interest in ethical hacking, secure coding, and applying AI to improve system security.
+I have developed hands-on projects ranging from secure web applications to browser extensions, and I actively participate in CTFs and idea competitions.
+
+Career Objective
+
+My objective is to work in cybersecurity and secure software development, focusing on penetration testing, secure web development, and security-focused automation.
+I aim to help organizations and individuals build safer digital systems through ethical and professional security practices.`;
+
+    const terminalElement = document.getElementById('terminal-text');
+    let i = 0;
+
+    function typeWriter() {
+      if (i < terminalText.length) {
+        terminalElement.textContent = terminalText.substring(0, i + 1);
+        i++;
+        setTimeout(typeWriter, Math.random() * 30 + 10);
+      }
+    }
+    setTimeout(typeWriter, 800);
+
+    // Animate skill bars on scroll (kept same logic but made more robust)
+    function animateSkillBars() {
+      document.querySelectorAll('.skill-progress').forEach(bar => {
+        bar.style.width = bar.getAttribute('data-width');
+      });
+    }
+
+    const skillsSection = document.querySelector('section:nth-of-type(3)');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateSkillBars();
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.35 });
+
+    if (skillsSection) observer.observe(skillsSection);
+
+    // Matrix background effect (unchanged)
+    const canvas = document.getElementById('matrix-canvas');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+    const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const nums = '0123456789';
+    const symbols = '!"#$%&\\\'()*+,-./:;<=>?@[\\\\]^_`{|}~';
+    const alphabet = katakana + latin + nums + symbols;
+
+    const fontSize = 16;
+    let columns = canvas.width / fontSize;
+    const rainDrops = [];
+
+    for (let x = 0; x < columns; x++) rainDrops[x] = 1;
+
+    const draw = () => {
+      ctx.fillStyle = 'rgba(13, 17, 23, 0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = '#33ff33';
+      ctx.font = fontSize + 'px monospace';
+
+      for (let i = 0; i < rainDrops.length; i++) {
+        const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+        ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+
+        if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          rainDrops[i] = 0;
+        }
+        rainDrops[i]++;
+      }
+    };
+
+    setInterval(draw, 30);
+
+    // Binary rain effect (unchanged)
+    function createBinaryRain() {
+      const binary = '0101010101';
+      const element = document.createElement('div');
+      element.className = 'binary-rain';
+      element.textContent = binary;
+      element.style.left = Math.random() * window.innerWidth + 'px';
+      element.style.animationDuration = (Math.random() * 5 + 3) + 's';
+      document.body.appendChild(element);
+
+      setTimeout(() => element.remove(), parseFloat(element.style.animationDuration) * 1000);
+    }
+    setInterval(createBinaryRain, 100);
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
+</body>
+</html>
